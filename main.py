@@ -128,7 +128,7 @@ def melo_tts_http(request: flask.Request) -> flask.Response:
 
     raw_speaker_input = get_param(request_json, request_args, 'speaker')
     speed = get_param(request_json, request_args, 'speed', 1.0, float)
-    device = get_param(request_json, request_args, 'device', 'auto')
+    device = get_param(request_json, request_args, 'device', 'cpu')
 
     temp_output_path = None
 
