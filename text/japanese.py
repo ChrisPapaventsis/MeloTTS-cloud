@@ -360,33 +360,6 @@ def hira2kata(text: str) -> str:
 
 _SYMBOL_TOKENS = set(list("・、。？！"))
 _NO_YOMI_TOKENS = set(list("「」『』―（）［］[]"))
-_TAGGER = MeCab.Tagger()
-
-
-def text2kata(text: str) -> str:
-    parsed = _TAGGER.parse(text)
-    res = []
-    for line in parsed.split("\n"):
-        if line == "EOS":
-            break
-        parts = line.split("\t")
-
-        word, yomi = parts[0], parts[1]
-        if yomi:
-            try:
-                res.append(yomi.split(',')[6])
-            except:
-                import pdb; pdb.set_trace()
-        else:
-            if word in _SYMBOL_TOKENS:
-                res.append(word)
-            elif word in ("っ", "ッ"):
-                res.append("ッ")
-            elif word in _NO_YOMI_TOKENS:
-                pass
-            else:
-                res.append(word)
-    return hira2kata("".join(res))
 
 
 _ALPHASYMBOL_YOMI = {
