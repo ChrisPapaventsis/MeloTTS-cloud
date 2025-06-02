@@ -6,7 +6,7 @@ WORKDIR /app
 RUN apt-get update && apt-get install -y --no-install-recommends \
     build-essential \
     libsndfile1 \
-    mecab \
+    mecab-python3 \
     libmecab-dev \
     mecab-ipadic-utf8 \
     swig \
