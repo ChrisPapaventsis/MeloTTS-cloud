@@ -9,7 +9,7 @@ import re # For parsing GCS URI
 from google.cloud import storage
 
 # It's assumed that 'melo' is a package you'll include in your requirements.txt
-from melo.api import TTS
+from api import TTS
 
 # --- GCS Client Initialization ---
 # Initialize once globally. In Cloud Functions/Run, this is efficient.

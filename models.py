@@ -10,8 +10,8 @@ from melo import attentions
 from torch.nn import Conv1d, ConvTranspose1d, Conv2d
 from torch.nn.utils import weight_norm, remove_weight_norm, spectral_norm
 
-from melo.commons import init_weights, get_padding
-import melo.monotonic_align as monotonic_align
+from commons import init_weights, get_padding
+import monotonic_align as monotonic_align
 
 
 class DurationDiscriminator(nn.Module):  # vits2
