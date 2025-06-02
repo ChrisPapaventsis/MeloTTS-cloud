@@ -1,0 +1,69 @@
+steps:
+  # 1. Build the Docker image
+  - name: "gcr.io/cloud-builders/docker"
+    args:
+      - "build"
+      - "-t"
+      # Tag image with Artifact Registry path, service name, and commit SHA
+      - "${_AR_HOSTNAME}/${_AR_PROJECT_ID}/${_AR_REPOSITORY}/${_SERVICE_NAME}:${COMMIT_SHA}"
+      - "." # Build context is the current directory
+    id: "Build Docker Image"
+
+  # 2. Push the Docker image to Artifact Registry
+  - name: "gcr.io/cloud-builders/docker"
+    args:
+      - "push"
+      - "${_AR_HOSTNAME}/${_AR_PROJECT_ID}/${_AR_REPOSITORY}/${_SERVICE_NAME}:${COMMIT_SHA}"
+    id: "Push to Artifact Registry"
+    waitFor: ["Build Docker Image"] # Wait for the build step to complete
+
+  # 3. Deploy to Cloud Run
+  - name: "gcr.io/google.com/cloudsdktool/cloud-sdk"
+    entrypoint: gcloud
+    args:
+      - "run"
+      - "deploy"
+      - "${_SERVICE_NAME}" # Service name from trigger variable
+      - "--image=${_AR_HOSTNAME}/${_AR_PROJECT_ID}/${_AR_REPOSITORY}/${_SERVICE_NAME}:${COMMIT_SHA}"
+      - "--region=${_DEPLOY_REGION}" # Region from trigger variable
+      - "--platform=${_PLATFORM}" # Platform from trigger variable
+
+      # --- Runtime Service Account for your Cloud Run service ---
+      # IMPORTANT: Replace this with the email of the service account your Cloud Run service will use.
+      # This service account needs permissions to read from the input GCS bucket
+      # and write to the output GCS bucket.
+      # Example: '--service-account=cloud-run-runtime-sa@${_AR_PROJECT_ID}.iam.gserviceaccount.com'
+      - "--service-account=service-35997617927@gs-project-accounts.iam.gserviceaccount.com"
+
+      # --- Environment Variables for your Cloud Run service (main.py) ---
+      # IMPORTANT: Replace placeholder values with your actual settings.
+      # These are hardcoded here. For more flexibility, you could define them as
+      # NEW, UNIQUE substitution variables in your Cloud Build Trigger UI.
+      - "--set-env-vars=OUTPUT_GCS_BUCKET_NAME=article-sound-files"
+      - "--set-env-vars=DEFAULT_LANGUAGE=EN"
+      - "--set-env-vars=DEFAULT_SPEAKER=EN-Default"
+      - "--set-env-vars=DEFAULT_SPEED=1.0"
+      - "--set-env-vars=DEFAULT_DEVICE=cpu"
+      # Add any other environment variables your main.py might need
+
+      # --- Invocation Settings ---
+      # For an event-driven service triggered by Eventarc, it typically doesn't need to be publicly callable.
+      # The Eventarc trigger's service account needs the 'roles/run.invoker' permission on this Cloud Run service.
+      - "--no-allow-unauthenticated"
+
+      # Optional: You can specify other Cloud Run settings like CPU, memory, min/max instances
+      # - '--cpu=1'
+      # - '--memory=512Mi' # Adjust based on your 'melo' library's needs
+      # - '--min-instances=0'
+      # - '--max-instances=3' # Adjust as needed
+      # - '--timeout=300s' # Max request processing time for the function
+
+    id: "Deploy to Cloud Run"
+    waitFor: ["Push to Artifact Registry"] # Wait for the image push to complete
+
+# This section lists the images built by this pipeline.
+images:
+  - "${_AR_HOSTNAME}/${_AR_PROJECT_ID}/${_AR_REPOSITORY}/${_SERVICE_NAME}:${COMMIT_SHA}"
+
+# Optional: Set a timeout for the entire build process.
+timeout: "1800s" # 30 minutes, adjust if your model loading/dependencies are large
