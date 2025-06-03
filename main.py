@@ -19,9 +19,9 @@ except Exception as e:
 
 # --- Configuration from Environment Variables ---
 # Define these in your Cloud Run service configuration
-OUTPUT_GCS_BUCKET_NAME = os.environ.get('OUTPUT_GCS_BUCKET_NAME')
+OUTPUT_GCS_BUCKET_NAME = os.environ.get('article-sound-files')
 DEFAULT_LANGUAGE = os.environ.get('DEFAULT_LANGUAGE', 'EN').upper()
-DEFAULT_SPEAKER = os.environ.get('DEFAULT_SPEAKER', 'EN-Default')
+DEFAULT_SPEAKER = os.environ.get('DEFAULT_SPEAKER', 'EN-BR')
 DEFAULT_SPEED = float(os.environ.get('DEFAULT_SPEED', 1.0))
 DEFAULT_DEVICE = os.environ.get('DEFAULT_DEVICE', 'cpu')
 
