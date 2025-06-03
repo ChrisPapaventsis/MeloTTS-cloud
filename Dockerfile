@@ -11,4 +11,4 @@ ENV PYO3_USE_ABI3_FORWARD_COMPATIBILITY=1
 RUN pip install -e .
 RUN python init_downloads.py
 
-CMD ["python", "./melo/app.py", "--host", "0.0.0.0", "--port", "8888"]
+CMD ["functions-framework", "--target=melo_tts_gcs_trigger", "--port=8080"]

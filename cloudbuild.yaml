@@ -41,7 +41,7 @@ steps:
       # NEW, UNIQUE substitution variables in your Cloud Build Trigger UI.
       - "--set-env-vars=OUTPUT_GCS_BUCKET_NAME=article-sound-files"
       - "--set-env-vars=DEFAULT_LANGUAGE=EN"
-      - "--set-env-vars=DEFAULT_SPEAKER=EN-Default"
+      - "--set-env-vars=DEFAULT_SPEAKER=EN-BR"
       - "--set-env-vars=DEFAULT_SPEED=1.0"
       - "--set-env-vars=DEFAULT_DEVICE=cpu"
       # Add any other environment variables your main.py might need
@@ -66,4 +66,4 @@ images:
   - "${_AR_HOSTNAME}/${_AR_PROJECT_ID}/${_AR_REPOSITORY}/${_SERVICE_NAME}:${COMMIT_SHA}"
 
 # Optional: Set a timeout for the entire build process.
-timeout: "1800s" # 30 minutes, adjust if your model loading/dependencies are large
+timeout: "3600s" # 30 minutes, adjust if your model loading/dependencies are large
